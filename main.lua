@@ -4,7 +4,7 @@ function love.load()
     love.filesystem.read("data.txt"):gsub("%d+", function(w) table.insert(rdata,tonumber(w)) end)
     tdata = {}
     layer = {}
-    floor = 0
+    floor = 1
     color = {}
     gsize = 256*4
     scale = 1
@@ -24,13 +24,16 @@ function love.load()
         reg2 = {},
         prep = function(x) return love.graphics.newImage("/textures/"..x..".png") end,
     }
+    for k,v in pairs(img.reg)do
+        img.reg2[k] = img.prep(v)
+    end
     -------------------------------------
     function floor_adjust(x)
-        return x and floor + 1 < #rdata/256 and floor + 1 or not x and floor - 1 >= 0 and floor - 1 or floor
+        return x and floor + 1 < #rdata/gsize and floor + 1 or not x and floor - 1 >= 0 and floor - 1 or floor
     end
     function populate_layer()
     for n = 1, gsize do -- Remember 0 and 1 offsets from front and end
-    layer[n] = img.prep(img.reg[rdata[n+(gsize*floor)]])
+    layer[n] = img.reg2[rdata[n+(gsize*floor)]]
     end end
     populate_layer()
     -------------------------------------
